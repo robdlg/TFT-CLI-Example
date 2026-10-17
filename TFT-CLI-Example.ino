@@ -1,3 +1,7 @@
+// Google AI Overview for "arduino simplecli background and text colors lcd commands"
+// "Complete Example Sketch (SimpleCLI + TFT Display)"
+// MIT License
+
 #include <SimpleCLI.h>
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <MCUFRIEND_kbv.h>   // Example TFT Display library (Change to your specific LCD library)
