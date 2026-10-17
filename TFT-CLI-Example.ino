@@ -4,9 +4,21 @@
 
 #include <SimpleCLI.h>
 #include <Adafruit_GFX.h>    // Core graphics library
-#include <MCUFRIEND_kbv.h>   // Example TFT Display library (Change to your specific LCD library)
+#include <Adafruit_ST7735.h> 
+#include <SPI.h>
 
-MCUFRIEND_kbv tft;
+// Define T-Dongle-S3 Display pins
+// ESP32-S3 GPIO
+#define TFT_CS    4
+#define TFT_RST   1
+#define TFT_DC    2
+#define TFT_MOSI  3
+#define TFT_SCLK  5
+#define TFT_BL    38
+
+// Initialize Adafruit ST7735 over hardware/software SPI
+Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
+
 SimpleCLI cli;
 
 // Create a command variable
@@ -58,11 +70,19 @@ void colorCallback(cmd* c) {
 void setup() {
     Serial.begin(9600);
     
-    // Initialize Display
-    uint16_t ID = tft.readID();
-    tft.begin(ID);
-    tft.fillScreen(0x0000); // Start Black
-    tft.setTextColor(0xFFFF); // Start White Text
+  // Turn on the backlight
+  pinMode(TFT_BL, OUTPUT);
+  digitalWrite(TFT_BL, LOW);
+
+  // Initialize display for 80x160 ST7735
+  tft.initR(INITR_MINI160x80_PLUGIN); 
+  tft.setRotation(1); // Adjust rotation as needed (0 - 3)
+  
+  tft.fillScreen(ST7735_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(ST7735_WHITE);
+  tft.setTextSize(1);
+  tft.println("T-Dongle-S3 ready!");
 
     // Define the CLI command: "color -bg <value> -txt <value>"
     colorCmd = cli.addCommand("color", colorCallback);
